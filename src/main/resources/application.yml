@@ -1,0 +1,63 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: compliance-regulatory-service
+          uri: lb://compliance-regulatory-service
+          predicates:
+            - Path=/api/compliance/**
+          filters:
+            - StripPrefix=2
+        
+        - id: fraud-detection-service
+          uri: lb://fraud-detection-service
+          predicates:
+            - Path=/api/fraud/**
+          filters:
+            - StripPrefix=2
+
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notification/**
+          filters:
+            - StripPrefix=2
+
+        - id: risk-scoring-service
+          uri: lb://risk-scoring-service
+          predicates:
+            - Path=/api/risk/**
+          filters:
+            - StripPrefix=2
+
+        - id: transaction-ingestion-service
+          uri: lb://transaction-ingestion-service
+          predicates:
+            - Path=/api/ingestion/**
+          filters:
+            - StripPrefix=2
+
+        - id: transaction-orchestration-service
+          uri: lb://transaction-orchestration-service
+          predicates:
+            - Path=/api/orchestration/**
+          filters:
+            - StripPrefix=2
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
